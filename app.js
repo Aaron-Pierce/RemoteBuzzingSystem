@@ -22,16 +22,93 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/public')));
+
+let games = [
+
+];
+
+
 http.listen(80, function () {
     console.log('listening on *:3000');
     io.on('connection', function (socket) {
         // socket.emit("welcome")
-        socket.on('buzz', function(data, uuid){
+
+        socket.on('buzz', function(uuid, team, game){
+
+            let cG; //currentGame
+            let aB; //activeBuzz
+
+
+            for(let j = 0; j < games.length; j++){
+                if(games[j].roomNumber === game){
+                    cG = games[j];
+                   aB = cG.activeBuzz;
+                }
+            }
+
+
+
             "use strict";
-            console.log(data - new Date().getTime());
-            console.log(uuid);
-            socket.emit('return', new Date().getTime());
-            io.emit("lockout", uuid)
+            if(!aB){
+                console.log(uuid + " buzzed");
+                io.emit("lockout", uuid, team);
+                for(let j = 0; j < games.length; j++){
+                    // console.log(games[j])
+                    if(games[j].roomNumber === game){
+                        games[j].activeBuzz = true;
+                        // console.log(games[j].activeBuzz)
+                    }
+                }
+            }
+        });
+
+        socket.on('reset', function (rN) {
+            for(let j = 0; j < games.length; j++){
+                if(games[j].roomNumber = rN){
+                    games[j].activeBuzz = false;
+                    io.emit("resetGame", rN)
+                }
+            }
+        });
+
+        socket.on('createGame', function (number) {
+            games.push({
+                roomNumber: number,
+                teams: 2,
+                activeBuzz: false
+            });
+            console.log(games)
+        });
+
+        socket.on('destroyGame', function (number) {
+            for(let i = 0; i < games.length; i++){
+                if(games[i].roomNumber === number){
+                    games.splice(i,1);
+                }
+            }
+            console.log(games)
+        });
+
+        socket.on('setTeamCount', function (roomNumber, teamCount) {
+            console.log(teamCount + " teams in " + roomNumber)
+            for(let k = 0; k < games.length; k++){
+                if(games[k].roomNumber === roomNumber){
+                    games[k].teams = teamCount;
+                }
+            }
+        });
+
+        socket.on('getTeams', function (gN) {
+            console.log('recieved getteams');
+            console.log(gN);
+            for(let i = 0; i < games.length; i++){
+                if(games[i].roomNumber === gN){
+                    socket.emit('returnTeams', games[i].teams);
+                    console.log(games[i].teams);
+                    return;
+                }
+            }
+            console.log("test")
         })
     })
 });
