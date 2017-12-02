@@ -17,36 +17,47 @@
 
     <script src="javascripts/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="./javascripts/md5.js"></script>
 
 
 </head>
 <body>
 <button onclick="buzz()">buzz</button>
-
-<button onclick="buzz_req()">buzz with requests instead of sockets</button>
 <script>
     let socket = io();
+    let uuid = md5(Math.random().toString());
     socket.on('welcome', function(){
         alert("greeted")
+    });
+    socket.on('lockout', function (user) {
+        if(user === uuid){
+            document.body.style.backgroundColor = "#5cb85c";
+            document.body.innerHTML += "<h1 id='buzzAlert'>You Buzzed!</h1>";
+            setTimeout(function () {
+
+                document.body.style.backgroundColor = "white";
+                document.body.removeChild(document.getElementById("buzzAlert"))
+            }, 3000)
+        }else{
+            document.body.style.backgroundColor = "#d9534f";
+            document.body.innerHTML += "<h1 id='buzzAlert'>An opponent buzzed!</h1>";
+            setTimeout(function () {
+
+                document.body.style.backgroundColor = "white";
+                document.body.removeChild(document.getElementById("buzzAlert"))
+            }, 3000)
+        }
     });
 
     let lasttime = 0;
     let buzz = function(){
-        socket.emit('buzz', new Date().getTime())
+        socket.emit('buzz', new Date().getTime(), uuid);
         lasttime = new Date().getTime()
     };
 
     socket.on('return', function(time){
         console.log(lasttime - time + " roundtrip")
     });
-    let buzz_req = function(){
-        $.post(
-            "/buzz",
-            {
-                time: new Date().getTime()
-            }
-        )
-    }
 </script>
 </body>
 </html>

@@ -26,10 +26,12 @@ http.listen(80, function () {
     console.log('listening on *:3000');
     io.on('connection', function (socket) {
         // socket.emit("welcome")
-        socket.on('buzz', function(data){
+        socket.on('buzz', function(data, uuid){
             "use strict";
-            console.log(new Date().getTime() - data);
-            socket.emit('return', new Date().getTime())
+            console.log(data - new Date().getTime());
+            console.log(uuid);
+            socket.emit('return', new Date().getTime());
+            io.emit("lockout", uuid)
         })
     })
 });
