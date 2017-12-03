@@ -36,6 +36,8 @@ document.addEventListener("DOMContentLoaded", function () {
             let selElement;
             if(touchEvent === 'touchstart'){
                 selElement = e.touches[0].target
+            }else{
+                selElement = e.toElement;
             }
             // alert(selElement);
 
