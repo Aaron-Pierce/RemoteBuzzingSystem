@@ -54,7 +54,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         socket.on('returnTeams', function (tC) {
             for(let i = 1; i <= tC; i++){
-                document.getElementById("gameScreenWrapper").innerHTML += "<button class='btn teamJoin' onclick='joinTeam(" + i + ")'>Join Team " + i + "</button><br><br>"
+                document.getElementById("gameScreenWrapper").innerHTML += "<button class='btn teamJoin' id='" + "joinTeam" + "" + i + "'>Join Team " + i + "</button><br><br>";
+                setTimeout(function () {
+                    document.getElementById("joinTeam" + i).addEventListener(touchEvent, function () {
+                        joinTeam(i);
+                    });
+                },10);
             }
         });
 
