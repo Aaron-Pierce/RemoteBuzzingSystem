@@ -8,6 +8,12 @@ let buzzlock = true;
 
 let roomNumber = "0000";
 
+// window.onerror = function(msg, url, linenumber) {
+//     alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
+//     return false
+// };
+
+
 document.addEventListener("DOMContentLoaded", function () {
         let uuid = md5(Math.random().toString());
 
@@ -27,9 +33,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click';
         document.addEventListener(touchEvent, function (e) {
-            if(e.toElement.classList.contains("buzzLock")){
+            let selElement;
+            if(touchEvent === 'touchstart'){
+                selElement = e.touches[0].target
+            }
+            // alert(selElement);
+
+            if(selElement.classList.contains("buzzLock")){
                 buzzlock = document.getElementById("buzzLock").checked;
-            }else if(e.toElement.tagName.toLowerCase() === "button") {
+            }else if(selElement.tagName.toLowerCase() === "button") {
                 // cancels click
             }else{
                 if(!buzzlock){
