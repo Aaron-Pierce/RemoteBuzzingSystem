@@ -42,8 +42,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     socket.on("lockout", function (uid, teamNum) {
+        navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
+        if (navigator.vibrate) {
+            // vibration API supported
+            if(admin){
+                window.navigator.vibrate([200,200]);
+            }else{
+                window.navigator.vibrate(200);
+            }
+
+
+        }
+
         if( admin ){
             document.getElementById("adminScreenWrapper").innerHTML += "<h2 id='buzzNotif'>Team " + teamNum + " buzzed</h2>"
+            // enable vibration support
         }
     })
 
