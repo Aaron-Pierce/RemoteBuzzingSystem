@@ -4,7 +4,10 @@ document.addEventListener("DOMContentLoaded", function () {
     let teamNum = 2;
     let gameCode = "0000";
     roomNumber = gameCode;
-    document.getElementById("createGameBtn").addEventListener("click", function () {
+
+    let touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click';
+
+    document.getElementById("createGameBtn").addEventListener(touchEvent, function () {
         admin = true;
         gameCode = Math.ceil(Math.random() * 10000).toString();
         while(gameCode.length !== 4){
@@ -32,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    document.getElementById("adminScreenWrapper").addEventListener("click", function () {
+    document.getElementById("adminScreenWrapper").addEventListener(touchEvent, function () {
         socket.emit('reset', gameCode);
         document.body.style.backgroundColor = "white";
         document.getElementById("adminScreenWrapper").removeChild(document.getElementById("buzzNotif"));

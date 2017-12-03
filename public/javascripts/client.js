@@ -25,7 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        document.addEventListener("click", function (e) {
+    let touchEvent = 'ontouchstart' in window ? 'touchstart' : 'click';
+        document.addEventListener(touchEvent, function (e) {
             if(e.toElement.classList.contains("buzzLock")){
                 buzzlock = document.getElementById("buzzLock").checked;
             }else if(e.toElement.tagName.toLowerCase() === "button") {
